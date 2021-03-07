@@ -81,7 +81,6 @@ echo
 echo -ne "[+]"
 error_check
 
-cd .. ; rm -rf TrudeKDE-files
 # --------------------------------------------------
 
 # ZSH
@@ -92,6 +91,10 @@ error_check
 echo -ne "[+] Installing OhMyZSH..."
 sudo chsh -s $(which zsh)
 xterm -e 'sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" ; sleep 1 ; exit'
+rm $HOME/.zshrc &> /dev/null
+cp zshrc ~/.zshrc 
+rm $HOME/.p10k.zsh &> /dev/null
+cp p10k.zsh ~/.p10k.zsh
 error_check
 
 echo -ne "[+] Preparing ZSH Plugins..."
@@ -106,3 +109,5 @@ error_check
 echo -ne "[+] Installing ZSH-syntax-highlighting..."
 git clone https://github.com/zsh-users/zsh-syntax-highlighting $ZSH_CUSTOM/plugins/zsh-syntax-highlighting &> /dev/null
 error_check
+
+cd .. ; rm -rf TrudeKDE-files
