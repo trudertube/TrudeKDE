@@ -45,6 +45,7 @@ echo
 echo -ne "[+] Downloading TrudeKDE-files..."
 git clone https://github.com/trudertube/TrudeKDE-files.git &> /dev/null
 cd TrudeKDE-files
+cp autostart/* ~/.config/autostart &> /dev/null
 error_check
 
 # Icons
