@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/bash
 
 #####################################################
 # TrudeKDE.sh by @TrudeEH                           #
@@ -6,7 +6,7 @@
 #    Tested on Kubuntu 20.04.2                      #
 #####################################################
 
-# Functions:
+# ----] Functions [----
 error_check(){
     if [ $? == 0 ]
     then
@@ -16,12 +16,8 @@ error_check(){
     fi
 }
 
-
+# ----] Prepare system [----
 sudo aaaaaaaa &> /dev/null
-
-echo -ne "[+] Preparing Installer..."
-sudo apt install -y git &> /dev/null
-error_check
 
 # Update base:
 echo
@@ -40,51 +36,44 @@ echo -ne '[#########################]\r'
 echo -ne '\n'
 echo
 
-# --------------------------------
-# Appearance 
-echo -ne "[+] Downloading TrudeKDE-files..."
-git clone https://github.com/trudertube/TrudeKDE-files.git &> /dev/null
-cd TrudeKDE-files
-cp autostart/* ~/.config/autostart &> /dev/null
+echo -ne "[+] Preparing Installer..."
+sudo apt install -y git python3 python3-pip &> /dev/null
 error_check
 
-# Icons
-echo -ne "[+] Installing Tela Circle Icon Theme..."
-cd tela-icons ; ./install.sh &> /dev/null ; cd ..
+# ----] Konsave [----
+echo -ne "[+] Downloading Konsave..."
+git clone https://github.com/Prayag2/consave &> /dev/null
 error_check
 
-# Cursor
-echo -ne "[+] Installing GoogleDot cursors..."
-mkdir $HOME/.icons &> /dev/null
-cp -r GoogleDot $HOME/.icons
+echo -ne "[+] Installing Konsave..."
+cd consave
+sudo python3 setup.py install &> /dev/null
+cd ../ ; sudo rm -rf consave
 error_check
 
-# Plasma themes
-echo -ne "[+] Installing Plasma themes..."
-mkdir $HOME/.local/share/plasma &> /dev/null
-cp -r look-and-feel $HOME/.local/share/plasma
+echo -ne "[+] Loading trude.knsv..."
+konsave -i trude.knsv &> /dev/null
+konsave -a 1 &> /dev/null
 error_check
 
-# Plymouth theme
+# ----] Plymouth Theme [----
 echo "[I] Please choose the circle theme"
 sleep 2
 echo "[+] Installing plymouth theme..."
 echo
-cd plymouth/Circle-Plymouth-Theme
+cd Circle-Plymouth-Theme
 sudo mkdir /usr/share/plymouth/themes/circle &> /dev/null
 sudo rsync -aq --exclude=install-circle * /usr/share/plymouth/themes/circle/ &> /dev/null
 sudo update-alternatives --install /usr/share/plymouth/themes/default.plymouth default.plymouth /usr/share/plymouth/themes/circle/circle.plymouth 100 &> /dev/null
 sudo update-alternatives --config default.plymouth  #here, choose the number of the theme you want to use then hit enter
 sudo update-initramfs -u &> /dev/null
 sudo apt-get install plymouth-x11 &> /dev/null
-cd ../../
+cd ../
 echo
 echo -ne "[+]"
 error_check
 
-# --------------------------------------------------
-
-# ZSH
+# ----] ZSH [----
 echo -ne "[+] Installing ZSH..."
 sudo apt install -y zsh zsh-syntax-highlighting fonts-powerline xterm &> /dev/null
 error_check
@@ -93,9 +82,9 @@ echo -ne "[+] Installing OhMyZSH..."
 sudo chsh -s $(which zsh)
 xterm -e 'sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" ; sleep 1 ; exit'
 rm $HOME/.zshrc &> /dev/null
-cp zshrc ~/.zshrc 
+cp zshrc $HOME/.zshrc 
 rm $HOME/.p10k.zsh &> /dev/null
-cp p10k.zsh ~/.p10k.zsh
+cp p10k.zsh $HOME/.p10k.zsh
 error_check
 
 echo -ne "[+] Preparing ZSH Plugins..."
@@ -110,5 +99,3 @@ error_check
 echo -ne "[+] Installing ZSH-syntax-highlighting..."
 git clone https://github.com/zsh-users/zsh-syntax-highlighting $ZSH_CUSTOM/plugins/zsh-syntax-highlighting &> /dev/null
 error_check
-
-cd .. ; rm -rf TrudeKDE-files
